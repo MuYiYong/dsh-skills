@@ -1,0 +1,4 @@
+interface:
+  display_name: "DSH 插件开发与维护"
+  short_description: "创建独立 DSH 插件，支持本体智能、界面设计、升级适配和生命周期验证"
+  default_prompt: "使用 $dsh-plugin，在独立仓库创建或维护我的 DSH 插件，核实宿主接口、实现应用功能与 UI，并验证安装、卸载及升级兼容性。"

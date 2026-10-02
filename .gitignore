@@ -1,0 +1,9 @@
+.planning/
+__pycache__/
+*.pyc
+*.tgz
+node_modules/
+output/
+.playwright-cli/
+.env
+.env.*
