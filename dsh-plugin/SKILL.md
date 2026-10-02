@@ -14,7 +14,7 @@ description: 创建、维护、排错和升级 DeepSeek Harness（DSH）独立 C
 - 升级：读 [升级与验证](references/maintenance.md)，比较旧/新接口后再修改兼容声明。
 - 仅评审：输出证据和建议，不安装插件或改 profile。
 
-确定插件仓库、目标 profile、DSH 路径/版本。用户未指定源码时，可先检查 `/home/vesoft/deepseek-harness`；不要把它写死在生成的应用中。在 DSH 源码上只读取证，不把外部插件放进其 `packages/`，不改 agent-loop 或现有未提交文件。
+确定插件仓库、目标 profile、DSH 路径/版本。用户未指定源码时，先从当前项目或相邻目录查找 DSH checkout；无法确认时询问路径。辅助脚本通过参数接收路径，不把本机目录写死在生成的应用中。在 DSH 源码上只读取证，不把外部插件放进其 `packages/`，不改 agent-loop 或现有未提交文件。
 
 ```bash
 python3 <skill目录>/scripts/probe_dsh.py --dsh /path/to/deepseek-harness --output ./dsh-baseline.json
