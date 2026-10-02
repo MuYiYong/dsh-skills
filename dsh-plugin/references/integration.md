@@ -29,7 +29,7 @@ compatibility.json          项目自己的测试记录；不是 profile 版本�
     "bundle": { "patch": "./cordis.patch.yml" },
     "client": {
       "platform": "web", "immediately": true,
-      "inject": ["@deepseek-ai/dsh-client-ui-conversation", "@deepseek-ai/dsh-client-locale"]
+      "inject": ["@deepseek-ai/dsh-client-ui-plugin-manager", "@deepseek-ai/dsh-client-locale"]
     }
   }
 }
@@ -45,6 +45,10 @@ compatibility.json          项目自己的测试记录；不是 profile 版本�
 ```
 
 `id` 是稳定的配置身份，改名会影响用户覆盖。patch 的 `config` 替换整个对象，不是深合并。顺序为 bundle → profile → home → `--patch`；后层可能覆盖启用状态。Client 半侧只由裸包名那一行挂载，`@acme/ontology-workbench/subpath` 不挂浏览器半侧。
+
+上面是手写配置示例。生成器为 row、locale、CSS 和 slot 标识添加包名摘要，避免 `@a/b` 与 `a-b` 等名称归一后冲突。已有插件的 row id 保持原值；更新 skill 不会改写已生成项目。需要处理现有冲突时，先备份配置，再一起迁移目标插件的 id 及引用该 id 的 profile/home patch，并验证启用状态和配置覆盖。
+
+示例 Client 依赖 Plugin Manager 提供的 `plugins.detail.section`。改用其他 slot 时同步核实提供该 slot 的包，并调整 `dsh.client.inject`；它声明激活依赖，不是运行时 JS 导入。
 
 ## Host
 

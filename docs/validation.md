@@ -36,3 +36,16 @@
 cc-switch 的发现/安装/更新路径依据其上游 `src-tauri/src/services/skill.rs` 与 README 核对，未修改本机数据库、未宣称已操作本机 cc-switch GUI。CI 只验证便携静态/生成检查，不声称覆盖真实 DSH。
 
 不同 DSH 版本、Windows、真实本体数据库、生产数据迁移不在样例实测范围，需具体插件补齐。论文采用可访问摘要中的机制说明，不声称全文形式化审查。
+
+## 恢复任务后的回归验证
+
+2026-10-02 再次核验同一 DSH runtime/commit 与 Node 版本，保留宿主原有四处 UI 文件修改。独立源码审计发现并修复了两项生成器边界：不同包名归一后共享 row/locale/slot/CSS 标识，以及错误接受数字预发布标识含前导零的 SemVer。默认 UI 依赖与来源说明也已对齐 Plugin Manager 的实际 slot。
+
+- `python3 scripts/check_skill.py`、system skill-creator 的 quick_validate 和 `git diff --check` 通过；`python3 -m unittest discover -s dsh-plugin/tests -v` 为 **7 个测试通过**。新回归在旧实现上失败，修复后通过，覆盖同形包名、长包名、稳定身份、合法和非法 SemVer。原工具名称算法保持不变。
+- 新临时目录分别生成 host/ui/full，三种模式均通过真实 built DSH 的 `smoke.mjs`；工具执行、错误、取消、卸载/重挂以及 Client factory 检查通过，仍不把 adapter 检查当成浏览器证明。
+- `@a/b` 与 `a-b` 分别打包，各含 9 个发布文件，在新的隔离 `DSH_HOME` 中通过 CLI 同时安装。dump 分别出现 `a-b-c93bbe639bd6`、`a-b-d44362d67d92`；真实页面两个包均可运行和渲染自身面板。
+- 真实页面禁用 `a-b` 后其面板消失，`@a/b` 仍运行；重新启用后恢复且 DOM 中仅 1 个对应面板。英文浅色 1280×720 与中文深色 375×812 截图已检查，页面宽度分别为 1280/375，无横向溢出；Tab 可聚焦折叠项，Enter 可展开；认证后的页面 console 为 0 errors / 0 warnings。
+- 终止并重启本次测试宿主后，两个包均为 1 个组件运行中，各自详情页正常渲染；中文、深色与启用状态保留。
+- 独立代码审查未发现阻塞项。新身份仅用于新生成项目；已有插件 id 和用户覆盖的迁移说明见 integration.md，不自动改写既有项目。
+
+测试环境处理：安装子进程的 PATH 显式加入目标 DSH 的 pnpm；两个包的 npm tarball 同名，因此分别放入独立打包目录，再在全新 home 验证。首次未带临时 token 的页面访问返回 401，使用宿主生成的认证入口后成功；预览/API key 引导通过页面“稍后配置”完成，未输入密钥或调用模型。这些不是插件运行失败。测试 profile、浏览器状态、认证信息和临时 tarball 均不入仓库。

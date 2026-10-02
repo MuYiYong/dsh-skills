@@ -8,7 +8,9 @@ import re
 
 ASSETS = Path(__file__).resolve().parents[1] / 'assets/starter'
 NAME = re.compile(r'(?:@[a-z0-9][a-z0-9._-]*/)?[a-z0-9][a-z0-9._-]*\Z')
-VERSION = re.compile(r'(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?\Z')
+NUMBER = r'(?:0|[1-9][0-9]*)'
+PRERELEASE = rf'(?:{NUMBER}|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)'
+VERSION = re.compile(rf'{NUMBER}\.{NUMBER}\.{NUMBER}(?:-{PRERELEASE}(?:\.{PRERELEASE})*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?\Z')
 
 
 def generate(name, out, kind, version):
@@ -18,9 +20,13 @@ def generate(name, out, kind, version):
         raise ValueError('Supply an exact tested DSH version, not a range or wildcard')
     if out.exists() or out.is_symlink():
         raise ValueError(f'Refusing to replace existing destination: {out}')
-    identifier = re.sub(r'[^a-z0-9]+', '-', name).strip('-')
+    slug = re.sub(r'[^a-z0-9]+', '-', name).strip('-')
+    digest = hashlib.sha256(name.encode()).hexdigest()
+    # Punctuation normalization loses package identity (@a/b and a-b collide).
+    # Bound the readable part and use the full package name for every UI/row id.
+    identifier = slug[:42].rstrip('-') + '-' + digest[:12]
     # Keep generated tool identifiers short and distinct across scoped package names.
-    tool = identifier.replace('-', '_')[:42] + '_' + hashlib.sha256(name.encode()).hexdigest()[:8] + '_inspect'
+    tool = slug.replace('-', '_')[:42] + '_' + digest[:8] + '_inspect'
     ui = kind in ('ui', 'full')
     host = kind in ('host', 'full')
     peers = {'@deepseek-ai/dsh': version}

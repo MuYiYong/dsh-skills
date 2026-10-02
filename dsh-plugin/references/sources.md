@@ -23,7 +23,7 @@
 - 包安装/版本检查：`apps/cli/README.zh.md`、`packages/boot/{app-boot,plugin-manager}/README.zh.md`。
 - 工具：`docs/cookbook/adding-a-tool.zh.md`、`packages/core/tools/src/{index,schema}.ts`。
 - UI：`packages/client/modules/README.zh.md`、`ui-slots/README.zh.md`、`ui-renderer/src/client/`、`locale/src/client/index.ts`、`docs/web-styling.zh.md`。
-- 主题：`packages/client/ui-theme/src/styles/design-platform.css`；slot：`packages/client/ui-conversation/src/client/contract/slots.ts`，更换位置先查实际声明和渲染方。
+- 主题：`packages/client/ui-theme/src/styles/design-platform.css`；默认详情页 slot：`packages/client/ui-plugin-manager/src/client/slot-contract.ts`，渲染方为同目录的 `PluginManagerPage.tsx`；会话 slot：`packages/client/ui-conversation/src/client/contract/slots.ts`。更换位置先查实际声明和渲染方。
 - 调用 Host：`docs/api-gateway.zh.md`、`packages/interaction/commands/README.zh.md`（若路径移动用 rg 找包名）。不要认为外部插件声明一个 @Remote 装饰器就自动进入宿主生成图。
 - Cordis 生命周期：`docs/cordis-primer.zh.md`、`docs/defensive-patterns.md`、`vendor/cordis/src/{fiber,registry,reflect}.ts`。
 
